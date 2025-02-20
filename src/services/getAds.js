@@ -13,7 +13,7 @@ const getAds = async (params) => {
     }
     console.log(object)
     try {
-        const response = await axios.post('ttps://bonify-api-production.up.railway.app/hotspot/getAds', object)
+        const response = await axios.post('https://bonify-api-production.up.railway.app/hotspot/getAds', object)
         console.log(response)
         if (response.status === 200) {
             console.log('Propagandas buscadas!');
