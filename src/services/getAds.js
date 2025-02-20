@@ -28,3 +28,5 @@ const getAds = async (params) => {
         throw error;
     }
 };
+
+export default getAds
