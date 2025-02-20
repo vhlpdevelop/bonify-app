@@ -38,6 +38,8 @@ const HotspotRedirect = () => {
                 setAds(adsData); // Atualiza o estado com os dados das propagandas
                 setLoading(false); // Finaliza o carregamento
             } catch (error) {
+                console.log(error)
+                console.log(error.message)
                 setError('Erro ao carregar as propagandas.'); // Define o erro
                 setLoading(false); // Finaliza o carregamento
             }
