@@ -2,20 +2,18 @@ import axios from 'axios';
 
 const getAds = async (params) => {
     console.log(params)
-        formData.append('username', params.username);
-        formData.append('linkloginonly', params.linkLoginOnly);
-        formData.append('linklogin', params.linkLogin);
-        formData.append('linkorig', params.linkOrig);
-        formData.append('dst', params.dst);
-        formData.append('mac', params.mac);
-        formData.append('ip', params.ip);
-        formData.append('popup', 'false');
+    const object ={
+        'username': params.username,
+        'linkloginonly':params.linkLoginOnly,
+        'linklogin': params.linkLogin,
+        'dst': params.dst,
+        'mac':params.mac,
+        'ip':params.ip,
+        'hostname':params.hostname
+    }
+    console.log(object)
     try {
-        const response = await axios.post('ttps://bonify-api-production.up.railway.app/hotspot/getAds', formData, {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-        })
+        const response = await axios.post('ttps://bonify-api-production.up.railway.app/hotspot/getAds', object)
         console.log(response)
         if (response.status === 200) {
             console.log('Propagandas buscadas!');
