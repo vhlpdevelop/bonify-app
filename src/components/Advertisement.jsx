@@ -17,7 +17,7 @@ const Advertisement = ({ ads, params }) => {
     // Cria um formulário dinamicamente
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = 'http://192.168.88.1/login'; // URL de login do MikroTik
+    form.action = 'https://192.168.88.1/login'; // URL de login do MikroTik
 
     // Adiciona os campos do formulário
     const campos = [
