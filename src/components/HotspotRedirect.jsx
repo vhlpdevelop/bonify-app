@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import Advertisement from './Advertisement';
-import getAds from './services/getAds'; // Importe a função getAds
+import getAds from '../services/getAds'; // Importe a função getAds
 
 const HotspotRedirect = () => {
     const location = useLocation();
