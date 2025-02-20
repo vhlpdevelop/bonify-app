@@ -25,9 +25,6 @@ const HotspotRedirect = () => {
 
 
         const params = { mac, ip, username, hostname, linkLogin, linkLoginOnly, linkOrig, error };
-        getAds(params).then( () => {
-
-        })
         setParams(params);
 
         const timer = setTimeout(() => {
@@ -68,7 +65,7 @@ const HotspotRedirect = () => {
                       Carregando propaganda...
 
                     </Typography>}
-                    <h1>Redirecionando para o hotspot...</h1>
+                    {loading && <h1>Redirecionando para o hotspot...</h1>}
                     {ads && <Advertisement ads={ads} params={params} />} {/* Exibe o componente Advertisement */}
                 </CardContent>
             </Card>

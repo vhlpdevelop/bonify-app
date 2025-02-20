@@ -6,6 +6,7 @@ import theme from './theme';
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
+import Welcome from './components/welcome'
 const App = () => {
   return (
     <ThemeProvider theme={theme}>
@@ -20,6 +21,7 @@ const App = () => {
         <Router>
           <Routes>
             <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
+            <Route path="/welcome"element={<Welcome />} />
           </Routes>
         </Router>
       </Box>
