@@ -47,7 +47,7 @@ const Advertisement = ({ ads, params }) => {
         <div key={index}>
           <CardMedia
             component="img"
-            height="140"
+            height="320"
             src={ad.imageUrl}
             alt={ad.title}
           />
