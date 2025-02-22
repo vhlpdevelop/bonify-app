@@ -4,8 +4,9 @@ import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
 const Advertisement = ({ ads }) => {
+  const totalDuration = ads.reduce((acc, ad) => acc + ad.duration, 0); // Soma das durações
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
-  const [tempoRestante, setTempoRestante] = useState(ads[0]?.duration || 0);
+  const [tempoRestante, setTempoRestante] = useState(totalDuration);
   const [showAdvertisement, setShowAdvertisement] = useState(false);
 
   useEffect(() => {
@@ -16,16 +17,20 @@ const Advertisement = ({ ads }) => {
 
       return () => clearInterval(intervalo);
     } else {
-      // Se ainda houver anúncios para exibir, passa para o próximo
-      if (currentAdIndex < ads.length - 1) {
-        setCurrentAdIndex((prevIndex) => prevIndex + 1);
-        setTempoRestante(ads[currentAdIndex + 1].duration);
-      } else {
-        // Se for o último anúncio, exibe o botão
-        setShowAdvertisement(true);
-      }
+      setShowAdvertisement(true);
     }
-  }, [tempoRestante, currentAdIndex, ads]);
+  }, [tempoRestante]);
+
+  useEffect(() => {
+    // Atualiza o índice do anúncio quando o tempo de um termina
+    const duracaoAcumulada = ads
+      .slice(0, currentAdIndex + 1)
+      .reduce((acc, ad) => acc + ad.duration, 0);
+
+    if (tempoRestante <= totalDuration - duracaoAcumulada && currentAdIndex < ads.length - 1) {
+      setCurrentAdIndex((prevIndex) => prevIndex + 1);
+    }
+  }, [tempoRestante, currentAdIndex, ads, totalDuration]);
 
   const updateInteraction = async (action) => {
     try {
@@ -77,17 +82,21 @@ const Advertisement = ({ ads }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 400, textAlign: 'center' }}>
       {ads.length > 0 && (
         <>
           <CardMedia
             component="img"
-            height="320"
             src={ads[currentAdIndex].imageUrl}
             alt={ads[currentAdIndex].title}
+            sx={{
+              width: '100%',
+              height: 250, // Tamanho fixo da imagem
+              objectFit: 'cover', // Mantém a proporção e cobre todo o espaço
+            }}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress duration={ads[currentAdIndex].duration} />}
+            {!showAdvertisement && <LinearProgress duration={totalDuration} restante={tempoRestante} />}
             <Typography gutterBottom variant="h5" component="div">
               {ads[currentAdIndex].title}
             </Typography>
