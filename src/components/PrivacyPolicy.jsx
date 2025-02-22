@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, Container, Box, Link } from '@mui/material';
+import { Typography, Container, Box, Link, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const PrivacyPolicy = () => {
