@@ -28,20 +28,30 @@ LinearProgressWithLabel.propTypes = {
 };
 
 export default function LinearWithValueLabel() {
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(100); // Inicia em 100%
+  const [tempoRestante, setTempoRestante] = React.useState(props); // Temporizador de 5 segundos
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress >= 100 ? 20 : prevProgress + 20));
-    }, 800);
+      setProgress((prevProgress) => {
+        const novoProgresso = prevProgress - 20; // Diminui 20% a cada segundo
+        return novoProgresso >= 0 ? novoProgresso : 0; // Não permite que o progresso seja menor que 0
+      });
+
+      setTempoRestante((prevTempo) => (prevTempo > 0 ? prevTempo - 1 : 0)); // Atualiza o tempo restante
+    }, 1000); // Intervalo de 1 segundo
+
     return () => {
-      clearInterval(timer);
+      clearInterval(timer); // Limpa o intervalo ao desmontar o componente
     };
   }, []);
 
   return (
     <Box sx={{ width: '100%' }}>
       <LinearProgressWithLabel value={progress} />
+      <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center', mt: 1 }}>
+        {`Tempo restante: ${tempoRestante}s`} {/* Exibe o tempo restante em segundos */}
+      </Typography>
     </Box>
   );
 }

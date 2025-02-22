@@ -38,7 +38,7 @@ const Advertisement = ({ ads, params }) => {
       console.log(action); //notClick
       let params = {
         action: action,
-        adID: ads[0].id,
+        adID: ads[0]._id,
         duration: 5,
       }
       updateInteraction(params).then(() => {
