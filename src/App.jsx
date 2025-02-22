@@ -17,6 +17,7 @@ const App = () => {
         alignItems="center"
         minHeight="100vh"
         width="100vw"
+        border="0"
       >
         <Router>
           <Routes>
