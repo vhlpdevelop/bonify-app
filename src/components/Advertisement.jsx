@@ -117,7 +117,7 @@ const Advertisement = ({ ads }) => {
           />
           <CardContent>
             {!showAdvertisement && (
-              <LinearTimer totalDuration={totalDuration} tempoRestante={tempoRestante} />
+              <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />
             )}
             <Typography gutterBottom variant="h5" component="div">
               {ads[currentAdIndex].title}
