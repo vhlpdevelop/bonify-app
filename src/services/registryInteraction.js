@@ -3,7 +3,7 @@ import axios from 'axios';
 const registryInteraction = async (params) => {
    console.log("registryInteraction ->", params)
     
-    console.log(object)
+    console.log(params)
     try {
         const response = await axios.post('https://bonify-api-production.up.railway.app/hotspot/registryInteraction', params)
         console.log(response)
