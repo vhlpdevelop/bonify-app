@@ -1,4 +1,3 @@
-// filepath: /C:/Users/user/Desktop/Zappy project/zappy-project/src/components/Advertisement.jsx
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
 import registryInteraction from '../services/registryInteraction';
@@ -12,37 +11,36 @@ const Advertisement = ({ ads, params }) => {
     if (tempoRestante > 0) {
       // Configura um intervalo para decrementar o tempo a cada segundo
       const intervalo = setInterval(() => {
-          setTempoRestante((prev) => prev - 1);
+        setTempoRestante((prev) => prev - 1);
       }, 1000);
 
       // Limpa o intervalo quando o componente é desmontado
       return () => clearInterval(intervalo);
-  } else {
+    } else {
       // Quando o tempo chegar a zero, exibe o botão
       setShowAdvertisement(true);
-  }
-}, [tempoRestante]);
-
-
+    }
+  }, [tempoRestante]);
 
   const updateInteraction = async (action) => {
     try {
       const adsData = await registryInteraction(action); // Busca as propagandas
-      console.log(adsData)
+      console.log(adsData);
     } catch (error) {
-      console.log(error)
-      console.log(error.message)
+      console.log(error);
+      console.log(error.message);
     }
   };
 
-
   const liberarAcesso = (action) => {
-    console.log(action)
-    updateInteraction(action).then(() => {
-      console.log('Registro feito!');
-      fazerLogin();
-    })
-  }
+    return () => { // Retorna uma função de callback
+      console.log(action);
+      updateInteraction(action).then(() => {
+        console.log('Registro feito!');
+        fazerLogin();
+      });
+    };
+  };
 
   const fazerLogin = () => {
     // Cria um formulário dinamicamente
@@ -71,7 +69,6 @@ const Advertisement = ({ ads, params }) => {
     form.submit();
   };
 
-
   return (
     <Card sx={{ maxWidth: 345 }}>
       {ads.map((ad, index) => (
@@ -81,10 +78,9 @@ const Advertisement = ({ ads, params }) => {
             height="320"
             src={ad.imageUrl}
             alt={ad.title}
-          
           />
           <CardContent>
-          {!showAdvertisement &&(<LinearProgress value={tempoRestante} />)}
+            {!showAdvertisement && <LinearProgress value={tempoRestante} />}
             <Typography gutterBottom variant="h5" component="div">
               {ad.title}
             </Typography>
@@ -92,11 +88,18 @@ const Advertisement = ({ ads, params }) => {
               {ad.description}
             </Typography>
           </CardContent>
-          <Box display="flex" justifyContent="center" pb={2}>
-           {showAdvertisement &&(<Button variant="contained" color="primary" onClick={liberarAcesso('notClick')}>
-              Pular
-            </Button>)}
-          </Box>
+
+          {showAdvertisement && (
+            <Box display="flex" justifyContent="center" pb={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={liberarAcesso('notClick')} // Passa a função de callback
+              >
+                Pular
+              </Button>
+            </Box>
+          )}
         </div>
       ))}
     </Card>
