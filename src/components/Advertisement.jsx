@@ -73,7 +73,7 @@ const Advertisement = ({ ads, params }) => {
             height="320"
             src={ad.imageUrl}
             alt={ad.title}
-            onClick={liberarAcesso('click')}
+          
           />
           <CardContent>
 

@@ -67,7 +67,6 @@ const HotspotRedirect = () => {
                       Carregando propaganda...
 
                     </Typography>}
-                    {!loading && <h1>Redirecionando para o hotspot...</h1>}
                     {ads && <Advertisement ads={ads} params={params} />} {/* Exibe o componente Advertisement */}
                 </CardContent>
             </Card>
