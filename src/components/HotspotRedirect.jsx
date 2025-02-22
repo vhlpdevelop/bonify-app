@@ -18,13 +18,14 @@ const HotspotRedirect = () => {
         const mac = searchParams.get('mac');
         const ip = searchParams.get('ip');
         const hostname = searchParams.get('hostname');
+        const adType = searchParams.get('adType');
         const username = searchParams.get('username');
         const linkLogin = searchParams.get('link-login');
         const linkLoginOnly = searchParams.get('link-login-only');
         const linkOrig = searchParams.get('link-orig');
 
 
-        const params = { mac, ip, username, hostname, linkLogin, linkLoginOnly, linkOrig, error };
+        const params = { mac, ip, username, hostname, adType, linkLogin, linkLoginOnly, linkOrig, error };
         setParams(params);
 
         const timer = setTimeout(() => {
