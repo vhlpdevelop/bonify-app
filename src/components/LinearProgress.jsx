@@ -29,7 +29,7 @@ LinearProgressWithLabel.propTypes = {
 
 export default function LinearWithValueLabel() {
   const [progress, setProgress] = React.useState(100); // Inicia em 100%
-  const [tempoRestante, setTempoRestante] = React.useState(props); // Temporizador de 5 segundos
+  const [tempoRestante, setTempoRestante] = React.useState(5); // Temporizador de 5 segundos
 
   React.useEffect(() => {
     const timer = setInterval(() => {
