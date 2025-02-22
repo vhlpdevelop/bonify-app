@@ -5,7 +5,7 @@ import theme from './theme';
 import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Typography } from '@mui/material';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
-import Welcome from './components/Welcome';
+import Welcome from './components/Welcome'; //Atualizado
 import CookieSettings from './components/CookieSettings'; // Importe o componente de configurações de cookies
 
 const App = () => {
