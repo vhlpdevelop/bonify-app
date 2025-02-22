@@ -24,6 +24,7 @@ const Advertisement = ({ ads, params }) => {
 
   const updateInteraction = async (action) => {
     try {
+      console.log("update interaction -> ", action);
       const adsData = await registryInteraction(action); // Busca as propagandas
       console.log(adsData);
     } catch (error) {
@@ -34,8 +35,13 @@ const Advertisement = ({ ads, params }) => {
 
   const liberarAcesso = (action) => {
     return () => { // Retorna uma função de callback
-      console.log(action);
-      updateInteraction(action).then(() => {
+      console.log(action); //notClick
+      let params = {
+        action: action,
+        adID: ads[0].id,
+        duration: 5,
+      }
+      updateInteraction(params).then(() => {
         console.log('Registro feito!');
         fazerLogin();
       });

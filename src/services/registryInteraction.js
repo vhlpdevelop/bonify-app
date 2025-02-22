@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const registryInteraction = async (params) => {
-   
+   console.log("registryInteraction ->", params)
     const object ={
         'adID': params.adID,
         'action':params.action,
