@@ -3,44 +3,48 @@ import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/mate
 import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
-const Advertisement = ({ ads, params }) => {
+const Advertisement = ({ ads }) => {
+  const [currentAdIndex, setCurrentAdIndex] = useState(0);
+  const [tempoRestante, setTempoRestante] = useState(ads[0]?.duration || 0);
   const [showAdvertisement, setShowAdvertisement] = useState(false);
-  const [tempoRestante, setTempoRestante] = useState(ads[0].duration); // Inicia com 5 segundos
 
   useEffect(() => {
     if (tempoRestante > 0) {
-      // Configura um intervalo para decrementar o tempo a cada segundo
       const intervalo = setInterval(() => {
         setTempoRestante((prev) => prev - 1);
       }, 1000);
 
-      // Limpa o intervalo quando o componente é desmontado
       return () => clearInterval(intervalo);
     } else {
-      // Quando o tempo chegar a zero, exibe o botão
-      setShowAdvertisement(true);
+      // Se ainda houver anúncios para exibir, passa para o próximo
+      if (currentAdIndex < ads.length - 1) {
+        setCurrentAdIndex((prevIndex) => prevIndex + 1);
+        setTempoRestante(ads[currentAdIndex + 1].duration);
+      } else {
+        // Se for o último anúncio, exibe o botão
+        setShowAdvertisement(true);
+      }
     }
-  }, [tempoRestante]);
+  }, [tempoRestante, currentAdIndex, ads]);
 
   const updateInteraction = async (action) => {
     try {
       console.log("update interaction -> ", action);
-      const adsData = await registryInteraction(action); // Busca as propagandas
+      const adsData = await registryInteraction(action);
       console.log(adsData);
     } catch (error) {
       console.log(error);
-      console.log(error.message);
     }
   };
 
   const liberarAcesso = (action) => {
-    return () => { // Retorna uma função de callback
-      console.log(action); //notClick
-      let params = {
+    return () => {
+      console.log(action);
+      const params = {
         action: action,
-        adID: ads[0]._id,
-        duration: ads[0].duration,
-      }
+        adID: ads[currentAdIndex]._id,
+        duration: ads[currentAdIndex].duration,
+      };
       updateInteraction(params).then(() => {
         console.log('Registro feito!');
         fazerLogin();
@@ -49,12 +53,10 @@ const Advertisement = ({ ads, params }) => {
   };
 
   const fazerLogin = () => {
-    // Cria um formulário dinamicamente
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = 'https://192.168.88.1/login'; // URL de login do MikroTik
+    form.action = 'https://192.168.88.1/login';
 
-    // Adiciona os campos do formulário
     const campos = [
       { name: 'username', value: 'usuario' },
       { name: 'password', value: '' },
@@ -70,28 +72,27 @@ const Advertisement = ({ ads, params }) => {
       form.appendChild(input);
     });
 
-    // Adiciona o formulário ao corpo da página e o envia
     document.body.appendChild(form);
     form.submit();
   };
 
   return (
     <Card sx={{ maxWidth: 345 }}>
-      {ads.map((ad, index) => (
-        <div key={index}>
+      {ads.length > 0 && (
+        <>
           <CardMedia
             component="img"
             height="320"
-            src={ad.imageUrl}
-            alt={ad.title}
+            src={ads[currentAdIndex].imageUrl}
+            alt={ads[currentAdIndex].title}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress duration={ad.duration} />}
+            {!showAdvertisement && <LinearProgress duration={ads[currentAdIndex].duration} />}
             <Typography gutterBottom variant="h5" component="div">
-              {ad.title}
+              {ads[currentAdIndex].title}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {ad.description}
+              {ads[currentAdIndex].description}
             </Typography>
           </CardContent>
 
@@ -100,14 +101,14 @@ const Advertisement = ({ ads, params }) => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={liberarAcesso('notClick')} // Passa a função de callback
+                onClick={liberarAcesso('notClick')}
               >
                 Pular
               </Button>
             </Box>
           )}
-        </div>
-      ))}
+        </>
+      )}
     </Card>
   );
 };
