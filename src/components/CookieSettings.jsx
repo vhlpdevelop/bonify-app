@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Checkbox, FormControlLabel } from '@mui/material';
+import { Typography, Checkbox, FormControlLabel, Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const CookieSettings = () => {
   const [cookies, setCookies] = useState({
@@ -8,11 +9,17 @@ const CookieSettings = () => {
     marketing: false,
   });
 
+  const navigate = useNavigate(); // Hook para navegação
+
   const handleChange = (event) => {
     setCookies({
       ...cookies,
       [event.target.name]: event.target.checked,
     });
+  };
+
+  const handleBack = () => {
+    navigate(-1); // Volta para a rota anterior
   };
 
   return (
@@ -51,6 +58,9 @@ const CookieSettings = () => {
         }
         label="Cookies de Marketing"
       />
+      <Button variant="contained" color="primary" onClick={handleBack} sx={{ marginTop: '20px' }}>
+        Voltar
+      </Button>
     </div>
   );
 };

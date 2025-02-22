@@ -2,21 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
-import { Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Typography } from '@mui/material';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
 
 import CookieSettings from './components/CookieSettings'; // Importe o componente de configurações de cookies
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState(null);
-  const [openCookieDialog, setOpenCookieDialog] = useState(false);
+  const [openCookieBanner, setOpenCookieBanner] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   // Verifica se o usuário já deu consentimento ao carregar o app
   useEffect(() => {
     const consent = localStorage.getItem('cookieConsent');
     if (consent === null) {
-      setOpenCookieDialog(true); // Mostra o banner se não houver consentimento
+      setOpenCookieBanner(true); // Mostra o banner se não houver consentimento
     } else {
       setCookieConsent(consent === 'true'); // Define o estado de consentimento
     }
@@ -26,7 +27,13 @@ const App = () => {
   const handleConsent = (consent) => {
     localStorage.setItem('cookieConsent', consent);
     setCookieConsent(consent);
-    setOpenCookieDialog(false);
+    setOpenCookieBanner(false);
+    setSnackbarOpen(true); // Mostra um feedback visual
+  };
+
+  // Fecha o Snackbar
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -41,40 +48,48 @@ const App = () => {
         border="0"
       >
         <Router>
-          {/* Banner de Consentimento de Cookies */}
-          <Dialog open={openCookieDialog} onClose={() => setOpenCookieDialog(false)}>
-            <DialogTitle>Uso de Cookies</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
+          {/* Rotas da Aplicação */}
+          <Routes>
+            <Route path="/hotspot-redirect" element={<HotspotRedirect />} />  {/* Rota para redirecionamento de hotspot */}
+            <Route path="/cookie-settings" element={<CookieSettings />} /> {/* Rota para configurações de cookies */}
+          </Routes>
+
+          {/* Banner de Cookies como Footer */}
+          {openCookieBanner && (
+            <Box
+              sx={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                backgroundColor: '#f5f5f5',
+                padding: '10px',
+                textAlign: 'center',
+                boxShadow: '0px -2px 5px rgba(0, 0, 0, 0.1)',
+              }}
+            >
+              <Typography variant="body2">
                 Este site utiliza cookies para melhorar a sua experiência. Ao continuar navegando, você concorda com o uso de cookies.
                 <br />
                 <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
                   Política de Privacidade
                 </a>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => handleConsent(true)} color="primary">
+              </Typography>
+              <Button onClick={() => handleConsent(true)} color="primary" sx={{ marginRight: '10px' }}>
                 Aceitar
               </Button>
               <Button onClick={() => handleConsent(false)} color="secondary">
                 Recusar
               </Button>
-            </DialogActions>
-          </Dialog>
+            </Box>
+          )}
 
-          {/* Rotas da Aplicação */}
-          <Routes>
-            <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
-            <Route path="/cookie-settings" element={<CookieSettings />} /> {/* Rota para configurações de cookies */}
-          </Routes>
-
-          {/* Rodapé com Link para Configurações de Cookies */}
-          <footer style={{ position: 'fixed', bottom: 0, width: '100%', textAlign: 'center', padding: '10px 0', backgroundColor: '#f5f5f5' }}>
-            <Typography variant="body2">
-              <a href="/cookie-settings">Configurações de Cookies</a>
-            </Typography>
-          </footer>
+          {/* Snackbar para Feedback */}
+          <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+            <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+              Preferências de cookies salvas com sucesso!
+            </Alert>
+          </Snackbar>
         </Router>
       </Box>
     </ThemeProvider>
