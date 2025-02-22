@@ -4,55 +4,32 @@ import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-function LinearProgressWithLabel(props) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
-      </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
-  );
-}
-
-LinearProgressWithLabel.propTypes = {
-  value: PropTypes.number.isRequired,
-};
-
 export default function LinearTimer({ duration = 5 }) {
-  const [progress, setProgress] = React.useState(100);
+  const [progress, setProgress] = React.useState(0);
   const [tempoRestante, setTempoRestante] = React.useState(duration);
 
   React.useEffect(() => {
-    // Reinicia o timer quando a duration muda
-    setProgress(100);
+    // Reinicia os estados quando a duração muda
+    setProgress(0);
     setTempoRestante(duration);
-    
+
     const incrementValue = 100 / duration;
+    
     const timer = setInterval(() => {
-      setProgress((prevProgress) => {
-        const newProgress = prevProgress - incrementValue;
-        return newProgress >= 0 ? newProgress : 0;
-      });
-      
+      setProgress((prev) => Math.min(prev + incrementValue, 100));
       setTempoRestante((prev) => Math.max(prev - 1, 0));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [duration]); // Executa novamente quando duration muda
+  }, [duration]);
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <LinearProgressWithLabel value={progress} />
-      <Typography variant="body2" sx={{ 
-        color: 'text.secondary', 
-        textAlign: 'center', 
-        mt: 1 
-      }}>
+    <Box sx={{ width: '100%', textAlign: 'center' }}>
+      {/* Barra de progresso */}
+      <LinearProgress variant="determinate" value={progress} />
+
+      {/* Texto do tempo restante */}
+      <Typography variant="body2" sx={{ color: 'text.secondary', mt: 1 }}>
         {`Tempo restante: ${tempoRestante}s`}
       </Typography>
     </Box>
@@ -60,5 +37,5 @@ export default function LinearTimer({ duration = 5 }) {
 }
 
 LinearTimer.propTypes = {
-  duration: PropTypes.number
+  duration: PropTypes.number,
 };
