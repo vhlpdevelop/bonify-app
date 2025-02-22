@@ -4,8 +4,10 @@ import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
 const Advertisement = ({ ads, params }) => {
+  console.log("ADS =>")
+  console.log(ads)
   const [showAdvertisement, setShowAdvertisement] = useState(false);
-  const [tempoRestante, setTempoRestante] = useState(ads.duration); // Inicia com 5 segundos
+  const [tempoRestante, setTempoRestante] = useState(5); // Inicia com 5 segundos
 
   useEffect(() => {
     if (tempoRestante > 0) {
