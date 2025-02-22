@@ -39,7 +39,7 @@ const Advertisement = ({ ads, params }) => {
       let params = {
         action: action,
         adID: ads[0]._id,
-        duration: 5,
+        duration: ads[0].duration,
       }
       updateInteraction(params).then(() => {
         console.log('Registro feito!');
