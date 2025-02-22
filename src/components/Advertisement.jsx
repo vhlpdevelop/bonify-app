@@ -1,16 +1,39 @@
 // filepath: /C:/Users/user/Desktop/Zappy project/zappy-project/src/components/Advertisement.jsx
 import React from 'react';
 import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
-import md5 from 'md5';
-import axios from 'axios';
+import registryInteraction from '../services/registryInteraction';
 
 const Advertisement = ({ ads, params }) => {
-
+    const [showAdvertisement, setShowAdvertisement] = useState(false);
   const Propaganda = ({ username, redirect }) => {
     useEffect(() => {
       const video = document.getElementById('propaganda');
       video.addEventListener('ended', liberarAcesso);
-    }, []);
+
+      const timer = setTimeout(() => {
+        setShowAdvertisement(true);
+      }, ads.duration*1000); //milissegundos
+
+
+      return () => clearTimeout(timer);
+    }, [location]);
+  }
+  const updateInteraction = async (action) => {
+    try {
+      const adsData = await registryInteraction(action); // Busca as propagandas
+    } catch (error) {
+      console.log(error)
+      console.log(error.message)
+    }
+  };
+
+
+  const liberarAcesso = (action) => {
+    console.log(action)
+    updateInteraction(action).then(() => {
+      console.log('Registro feito!');
+      fazerLogin();
+    })
   }
 
   const fazerLogin = () => {
@@ -50,6 +73,7 @@ const Advertisement = ({ ads, params }) => {
             height="320"
             src={ad.imageUrl}
             alt={ad.title}
+            onClick={liberarAcesso('click')}
           />
           <CardContent>
 
@@ -61,9 +85,9 @@ const Advertisement = ({ ads, params }) => {
             </Typography>
           </CardContent>
           <Box display="flex" justifyContent="center" pb={2}>
-            <Button variant="contained" color="primary" onClick={fazerLogin}>
+           {showAdvertisement &&<Button variant="contained" color="primary" onClick={liberarAcesso('notClick')}>
               Pular
-            </Button>
+            </Button>}
           </Box>
         </div>
       ))}
