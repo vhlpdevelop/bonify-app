@@ -4,17 +4,18 @@ import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
 const Advertisement = ({ ads }) => {
-  const totalDuration = ads.reduce((acc, ad) => acc + ad.duration, 0); // Soma das durações
+  const totalDuration = ads.reduce((acc, ad) => acc + ad.duration, 0);
   const [currentAdIndex, setCurrentAdIndex] = useState(0);
   const [tempoRestante, setTempoRestante] = useState(totalDuration);
   const [showAdvertisement, setShowAdvertisement] = useState(false);
+  const [adsExibidos, setAdsExibidos] = useState([]);
+  const [adClicado, setAdClicado] = useState(null); // Armazena qual anúncio foi clicado
 
   useEffect(() => {
     if (tempoRestante > 0) {
       const intervalo = setInterval(() => {
         setTempoRestante((prev) => prev - 1);
       }, 1000);
-
       return () => clearInterval(intervalo);
     } else {
       setShowAdvertisement(true);
@@ -22,7 +23,11 @@ const Advertisement = ({ ads }) => {
   }, [tempoRestante]);
 
   useEffect(() => {
-    // Atualiza o índice do anúncio quando o tempo de um termina
+    setAdsExibidos((prevAds) => {
+      const newAd = ads[currentAdIndex];
+      return prevAds.some((ad) => ad._id === newAd._id) ? prevAds : [...prevAds, newAd];
+    });
+
     const duracaoAcumulada = ads
       .slice(0, currentAdIndex + 1)
       .reduce((acc, ad) => acc + ad.duration, 0);
@@ -32,26 +37,32 @@ const Advertisement = ({ ads }) => {
     }
   }, [tempoRestante, currentAdIndex, ads, totalDuration]);
 
-  const updateInteraction = async (action) => {
+  const updateInteraction = async (data) => {
     try {
-      console.log("update interaction -> ", action);
-      const adsData = await registryInteraction(action);
-      console.log(adsData);
+      console.log("Enviando interação para API:", data);
+      await registryInteraction(data);
+      console.log("Registro feito com sucesso!");
     } catch (error) {
-      console.log(error);
+      console.error("Erro ao registrar interação:", error);
     }
   };
 
-  const liberarAcesso = (action) => {
+  const liberarAcesso = (action, clickedAd = null) => {
     return () => {
-      console.log(action);
-      const params = {
-        action: action,
-        adID: ads[currentAdIndex]._id,
-        duration: ads[currentAdIndex].duration,
-      };
-      updateInteraction(params).then(() => {
-        console.log('Registro feito!');
+      if (clickedAd) {
+        setAdClicado(clickedAd); // Salva o anúncio clicado
+      }
+
+      const adsParaEnviar = adsExibidos.map((ad) => ({
+        adID: ad._id,
+        duration: ad.duration,
+        clicked: clickedAd && clickedAd._id === ad._id,
+      }));
+
+      updateInteraction({
+        action,
+        ads: adsParaEnviar,
+      }).then(() => {
         fazerLogin();
       });
     };
@@ -62,10 +73,13 @@ const Advertisement = ({ ads }) => {
     form.method = 'POST';
     form.action = 'https://192.168.88.1/login';
 
+    // Se o usuário clicou em um anúncio, usa `dst_url`, senão mantém o Google
+    const destino = adClicado && adClicado.dst_active ? adClicado.dst_url : 'http://www.google.com';
+
     const campos = [
       { name: 'username', value: 'usuario' },
       { name: 'password', value: '' },
-      { name: 'dst', value: 'http://www.google.com' },
+      { name: 'dst', value: destino },
       { name: 'popup', value: 'false' },
     ];
 
@@ -90,13 +104,21 @@ const Advertisement = ({ ads }) => {
             src={ads[currentAdIndex].imageUrl}
             alt={ads[currentAdIndex].title}
             sx={{
-              width: 320,
-              height: 320, // Tamanho fixo da imagem
-              objectFit: 'cover', // Mantém a proporção e cobre todo o espaço
+              width: '100%',
+              height: 250,
+              objectFit: 'cover',
+              cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
+            }}
+            onClick={() => {
+              if (ads[currentAdIndex].dst_active) {
+                liberarAcesso('click', ads[currentAdIndex])();
+              }
             }}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />}
+            {!showAdvertisement && (
+              <LinearTimer totalDuration={totalDuration} tempoRestante={tempoRestante} />
+            )}
             <Typography gutterBottom variant="h5" component="div">
               {ads[currentAdIndex].title}
             </Typography>
