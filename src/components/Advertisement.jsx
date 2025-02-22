@@ -4,23 +4,22 @@ import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/mate
 import registryInteraction from '../services/registryInteraction';
 
 const Advertisement = ({ ads, params }) => {
-    const [showAdvertisement, setShowAdvertisement] = useState(false);
-  const Propaganda = ({ username, redirect }) => {
-    useEffect(() => {
-      const video = document.getElementById('propaganda');
-      video.addEventListener('ended', liberarAcesso);
-
-      const timer = setTimeout(() => {
-        setShowAdvertisement(true);
-      }, ads.duration*1000); //milissegundos
+  const [showAdvertisement, setShowAdvertisement] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowAdvertisement(true);
+    }, ads.duration*1000); //milissegundos
 
 
-      return () => clearTimeout(timer);
-    }, [location]);
-  }
+    return () => clearTimeout(timer);
+  }, [location]);
+
+
+
   const updateInteraction = async (action) => {
     try {
       const adsData = await registryInteraction(action); // Busca as propagandas
+      console.log(adsData)
     } catch (error) {
       console.log(error)
       console.log(error.message)
