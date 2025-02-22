@@ -9,7 +9,7 @@ const getAds = async (params) => {
         'dst': params.dst,
         'mac':params.mac,
         'ip':params.ip,
-        'hostname':params.hostname
+        'owner_id':params.hostname
     }
     console.log(object)
     try {
