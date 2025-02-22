@@ -3,7 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import { Route, Routes, useLocation } from 'react-router-dom'; // useLocation agora funciona
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'; // useLocation agora funciona
 import HotspotRedirect from './components/HotspotRedirect';
 import CookieSettings from './components/CookieSettings';
 import PrivacyPolicy from './components/PrivacyPolicy';
@@ -13,7 +13,7 @@ const App = () => {
   const [openCookieBanner, setOpenCookieBanner] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const location = useLocation(); // Agora useLocation funciona corretamente
-
+  const navigate = useNavigate(); // Hook para navegação
   // Verifica se o usuário já deu consentimento ao carregar o app
   useEffect(() => {
     const consent = localStorage.getItem('cookieConsent');
