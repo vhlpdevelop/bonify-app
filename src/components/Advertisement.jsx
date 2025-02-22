@@ -86,7 +86,7 @@ const Advertisement = ({ ads, params }) => {
             alt={ad.title}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress duration={ads.duration} />}
+            {!showAdvertisement && <LinearProgress duration={ad.duration} />}
             <Typography gutterBottom variant="h5" component="div">
               {ad.title}
             </Typography>
