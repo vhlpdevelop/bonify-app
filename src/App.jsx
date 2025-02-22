@@ -3,15 +3,16 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
-
+import PrivacyPolicy from './components/PrivacyPolicy';
 import CookieSettings from './components/CookieSettings'; // Importe o componente de configurações de cookies
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState(null);
   const [openCookieBanner, setOpenCookieBanner] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const location = useLocation(); // Hook para obter a localização atual
 
   // Verifica se o usuário já deu consentimento ao carregar o app
   useEffect(() => {
@@ -36,6 +37,9 @@ const App = () => {
     setSnackbarOpen(false);
   };
 
+  // Ocultar o banner de cookies na página de configurações de cookies
+  const showCookieBanner = openCookieBanner && location.pathname !== '/cookie-settings';
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -50,12 +54,13 @@ const App = () => {
         <Router>
           {/* Rotas da Aplicação */}
           <Routes>
-            <Route path="/hotspot-redirect" element={<HotspotRedirect />} />  {/* Rota para redirecionamento de hotspot */}
+            <Route path="/hotspot-redirect" element={<HotspotRedirect />} /> {/* Rota para redirecionamento de hotspot */}
             <Route path="/cookie-settings" element={<CookieSettings />} /> {/* Rota para configurações de cookies */}
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* Rota para política de privacidade */}
           </Routes>
 
           {/* Banner de Cookies como Footer */}
-          {openCookieBanner && (
+          {showCookieBanner && (
             <Box
               sx={{
                 position: 'fixed',
@@ -80,6 +85,9 @@ const App = () => {
               </Button>
               <Button onClick={() => handleConsent(false)} color="secondary">
                 Recusar
+              </Button>
+              <Button onClick={() => navigate('/cookie-settings')} color="primary" sx={{ marginLeft: '10px' }}>
+                Configurações de Cookies
               </Button>
             </Box>
           )}
