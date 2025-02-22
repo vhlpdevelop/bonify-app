@@ -104,8 +104,8 @@ const Advertisement = ({ ads }) => {
             src={ads[currentAdIndex].imageUrl}
             alt={ads[currentAdIndex].title}
             sx={{
-              width: '100%',
-              height: 250,
+              width: 320,
+              height: 320,
               objectFit: 'cover',
               cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
             }}
