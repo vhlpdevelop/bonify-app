@@ -2,17 +2,26 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
 import registryInteraction from '../services/registryInteraction';
+import LinearProgress from './LinearProgress';
 
 const Advertisement = ({ ads, params }) => {
   const [showAdvertisement, setShowAdvertisement] = useState(false);
+  const [tempoRestante, setTempoRestante] = useState(5); // Inicia com 5 segundos
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (tempoRestante > 0) {
+      // Configura um intervalo para decrementar o tempo a cada segundo
+      const intervalo = setInterval(() => {
+          setTempoRestante((prev) => prev - 1);
+      }, 1000);
+
+      // Limpa o intervalo quando o componente é desmontado
+      return () => clearInterval(intervalo);
+  } else {
+      // Quando o tempo chegar a zero, exibe o botão
       setShowAdvertisement(true);
-    }, ads.duration*1000); //milissegundos
-
-
-    return () => clearTimeout(timer);
-  }, [location]);
+  }
+}, [tempoRestante]);
 
 
 
@@ -75,7 +84,7 @@ const Advertisement = ({ ads, params }) => {
           
           />
           <CardContent>
-
+          {!showAdvertisement &&(<LinearProgress value={tempoRestante} />)}
             <Typography gutterBottom variant="h5" component="div">
               {ad.title}
             </Typography>
@@ -84,9 +93,9 @@ const Advertisement = ({ ads, params }) => {
             </Typography>
           </CardContent>
           <Box display="flex" justifyContent="center" pb={2}>
-           {showAdvertisement &&<Button variant="contained" color="primary" onClick={liberarAcesso('notClick')}>
+           {showAdvertisement &&(<Button variant="contained" color="primary" onClick={liberarAcesso('notClick')}>
               Pular
-            </Button>}
+            </Button>)}
           </Box>
         </div>
       ))}
