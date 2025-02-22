@@ -5,7 +5,7 @@ import LinearProgress from './LinearProgress';
 
 const Advertisement = ({ ads, params }) => {
   const [showAdvertisement, setShowAdvertisement] = useState(false);
-  const [tempoRestante, setTempoRestante] = useState(5); // Inicia com 5 segundos
+  const [tempoRestante, setTempoRestante] = useState(ads.duration); // Inicia com 5 segundos
 
   useEffect(() => {
     if (tempoRestante > 0) {
@@ -86,7 +86,7 @@ const Advertisement = ({ ads, params }) => {
             alt={ad.title}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress value={tempoRestante} />}
+            {!showAdvertisement && <LinearProgress duration={ads.duration} />}
             <Typography gutterBottom variant="h5" component="div">
               {ad.title}
             </Typography>

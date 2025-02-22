@@ -20,38 +20,45 @@ function LinearProgressWithLabel(props) {
 }
 
 LinearProgressWithLabel.propTypes = {
-  /**
-   * The value of the progress indicator for the determinate and buffer variants.
-   * Value between 0 and 100.
-   */
   value: PropTypes.number.isRequired,
 };
 
-export default function LinearWithValueLabel() {
-  const [progress, setProgress] = React.useState(100); // Inicia em 100%
-  const [tempoRestante, setTempoRestante] = React.useState(5); // Temporizador de 5 segundos
+export default function LinearTimer({ duration = 5 }) {
+  const [progress, setProgress] = React.useState(100);
+  const [tempoRestante, setTempoRestante] = React.useState(duration);
 
   React.useEffect(() => {
+    // Reinicia o timer quando a duration muda
+    setProgress(100);
+    setTempoRestante(duration);
+    
+    const incrementValue = 100 / duration;
     const timer = setInterval(() => {
       setProgress((prevProgress) => {
-        const novoProgresso = prevProgress - 20; // Diminui 20% a cada segundo
-        return novoProgresso >= 0 ? novoProgresso : 0; // Não permite que o progresso seja menor que 0
+        const newProgress = prevProgress - incrementValue;
+        return newProgress >= 0 ? newProgress : 0;
       });
+      
+      setTempoRestante((prev) => Math.max(prev - 1, 0));
+    }, 1000);
 
-      setTempoRestante((prevTempo) => (prevTempo > 0 ? prevTempo - 1 : 0)); // Atualiza o tempo restante
-    }, 1000); // Intervalo de 1 segundo
-
-    return () => {
-      clearInterval(timer); // Limpa o intervalo ao desmontar o componente
-    };
-  }, []);
+    return () => clearInterval(timer);
+  }, [duration]); // Executa novamente quando duration muda
 
   return (
     <Box sx={{ width: '100%' }}>
       <LinearProgressWithLabel value={progress} />
-      <Typography variant="body2" sx={{ color: 'text.secondary', textAlign: 'center', mt: 1 }}>
-        {`Tempo restante: ${tempoRestante}s`} {/* Exibe o tempo restante em segundos */}
+      <Typography variant="body2" sx={{ 
+        color: 'text.secondary', 
+        textAlign: 'center', 
+        mt: 1 
+      }}>
+        {`Tempo restante: ${tempoRestante}s`}
       </Typography>
     </Box>
   );
 }
+
+LinearTimer.propTypes = {
+  duration: PropTypes.number
+};
