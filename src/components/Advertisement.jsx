@@ -90,13 +90,13 @@ const Advertisement = ({ ads }) => {
             src={ads[currentAdIndex].imageUrl}
             alt={ads[currentAdIndex].title}
             sx={{
-              width: '100%',
-              height: 250, // Tamanho fixo da imagem
+              width: 320,
+              height: 320, // Tamanho fixo da imagem
               objectFit: 'cover', // Mantém a proporção e cobre todo o espaço
             }}
           />
           <CardContent>
-            {!showAdvertisement && <LinearProgress duration={totalDuration} restante={tempoRestante} />}
+            {!showAdvertisement && <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />}
             <Typography gutterBottom variant="h5" component="div">
               {ads[currentAdIndex].title}
             </Typography>
