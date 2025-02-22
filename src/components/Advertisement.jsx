@@ -1,5 +1,5 @@
 // filepath: /C:/Users/user/Desktop/Zappy project/zappy-project/src/components/Advertisement.jsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
 import registryInteraction from '../services/registryInteraction';
 
