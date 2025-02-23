@@ -108,13 +108,39 @@ const Advertisement = ({ ads }) => {
               height: 320,
               objectFit: 'cover',
               cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
+              position: 'relative', // Adicionado para posicionar o botão absolutamente
             }}
             onClick={() => {
               if (ads[currentAdIndex].dst_active) {
                 liberarAcesso('click', ads[currentAdIndex])();
               }
             }}
-          />
+          >
+            {/* Botão CTA */}
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 8,
+                right: 8,
+                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo cinza semi-transparente
+                color: 'white', // Texto claro
+                padding: '8px 16px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece ao passar o mouse
+                },
+              }}
+              onClick={(e) => {
+                e.stopPropagation(); // Impede que o clique no botão dispare o clique na imagem
+                if (ads[currentAdIndex].dst_active) {
+                  liberarAcesso('click', ads[currentAdIndex])();
+                }
+              }}
+            >
+              {ads[currentAdIndex].ctaText || 'Saiba mais'}
+            </Box>
+          </CardMedia>
           <CardContent>
             {!showAdvertisement && (
               <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />
