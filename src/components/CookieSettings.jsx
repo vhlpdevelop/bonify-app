@@ -3,7 +3,7 @@ import { Typography, Checkbox, FormControlLabel, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const CookieSettings = ({ onSave }) => {
-  const [cookies, setCookies] = useState({
+  const [cookies, setCookies] = useState(JSON.parse(localStorage.getItem('cookieConsent')) || {
     essential: true,
     analytics: false,
     marketing: false,
@@ -19,10 +19,8 @@ const CookieSettings = ({ onSave }) => {
   };
 
   const handleSave = () => {
-    if (onSave) {
-      onSave(cookies); // Passa as preferências de cookies para o componente pai
-    }
-    navigate(-1); // Volta para a rota anterior após salvar
+    onSave({ ...cookies, essential: true }); // Força cookies essenciais
+    navigate(-1);
   };
 
   return (
@@ -30,12 +28,9 @@ const CookieSettings = ({ onSave }) => {
       <Typography variant="h6">Configurações de Cookies</Typography>
       <FormControlLabel
         control={
-          <Checkbox
-            checked={cookies.essential}
-            onChange={handleChange}
-            name="essential"
-            color="primary"
-            disabled // Cookies essenciais não podem ser desativados
+          <FormControlLabel
+            control={<Checkbox checked={true} disabled />}
+            label="Cookies Essenciais (Obrigatórios)"
           />
         }
         label="Cookies Essenciais"
@@ -44,23 +39,10 @@ const CookieSettings = ({ onSave }) => {
         control={
           <Checkbox
             checked={cookies.analytics}
-            onChange={handleChange}
-            name="analytics"
-            color="primary"
+            onChange={(e) => setCookies({...cookies, analytics: e.target.checked})}
           />
         }
-        label="Cookies de Análise (Google Analytics)"
-      />
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={cookies.marketing}
-            onChange={handleChange}
-            name="marketing"
-            color="primary"
-          />
-        }
-        label="Cookies de Marketing"
+        label="Analíticos (Google Analytics)"
       />
       <Button variant="contained" color="primary" onClick={handleSave} sx={{ marginTop: '20px' }}>
         Salvar e Voltar

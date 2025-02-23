@@ -7,133 +7,115 @@ import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
 import CookieSettings from './components/CookieSettings';
 import PrivacyPolicy from './components/PrivacyPolicy';
-import { initGA, trackPageView } from './js/analytics'; // Importa as funções de rastreamento
+import { initGA, trackPageView } from './js/analytics';
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState({
-    essential: true, // Cookies essenciais (sempre ativos)
-    analytics: false, // Cookies de análise (Google Analytics)
-    marketing: false, // Cookies de marketing
+    essential: true,
+    analytics: false,
+    marketing: false,
   });
   const [openCookieBanner, setOpenCookieBanner] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const location = useLocation(); // Hook para obter a localização atual
-  const navigate = useNavigate(); // Hook para navegação
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  // Verifica se o usuário já deu consentimento ao carregar o app
+  // Verifica consentimento ao carregar
   useEffect(() => {
-    const consent = JSON.parse(localStorage.getItem('cookieConsent'));
-    if (consent === null) {
-      setOpenCookieBanner(true); // Mostra o banner se não houver consentimento
+    const savedConsent = localStorage.getItem('cookieConsent');
+    if (savedConsent) {
+      setCookieConsent(JSON.parse(savedConsent));
     } else {
-      setCookieConsent(consent); // Define o estado de consentimento
+      setOpenCookieBanner(true);
     }
   }, []);
 
-  // Inicializa o Google Analytics se o usuário consentir com cookies de análise
+  // Inicializa GA se consentido
   useEffect(() => {
     if (cookieConsent.analytics) {
-      initGA('G-FX9LLWKZMH'); // Substitua pelo seu ID de rastreamento
+      initGA('G-FX9LLWKZMH');
+      trackPageView(location.pathname); // Rastreia a página inicial
     }
-  }, [cookieConsent.analytics]);
+  }, [cookieConsent.analytics, location.pathname]);
 
-  // Rastreia a visualização da página se o usuário consentir com cookies de análise
-  useEffect(() => {
-    if (cookieConsent.analytics) {
-      trackPageView(location.pathname);
-    }
-  }, [location, cookieConsent.analytics]);
-
-
-  const handleSaveCookiePreferences = (preferences) => {
-    localStorage.setItem('cookieConsent', JSON.stringify(preferences));
-    setCookieConsent(preferences);
-  };
-
-  // Função para lidar com o consentimento do usuário
+  // Função de consentimento unificada
   const handleConsent = (consent) => {
     const newConsent = {
-      essential: true, // Cookies essenciais sempre ativos
-      analytics: consent, // Cookies de análise baseados no consentimento
-      marketing: false, // Cookies de marketing (opcional)
+      essential: true,
+      analytics: consent,
+      marketing: consent, // Se quiser ativar marketing junto com analytics
     };
+
     localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
     setCookieConsent(newConsent);
     setOpenCookieBanner(false);
-    setSnackbarOpen(true); // Mostra um feedback visual
+    setSnackbarOpen(true);
+
+    // Força novo carregamento se consentimento for dado posteriormente
+    if (consent && !window.gaInitialized) {
+      initGA('G-FX9LLWKZMH');
+      window.gaInitialized = true;
+    }
   };
 
-  // Fecha o Snackbar
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  // Atualiza preferências salvas
+  const handleSaveCookiePreferences = (preferences) => {
+    const updatedConsent = {
+      ...preferences,
+      essential: true // Garante cookies essenciais
+    };
+    
+    localStorage.setItem('cookieConsent', JSON.stringify(updatedConsent));
+    setCookieConsent(updatedConsent);
+
+    if (updatedConsent.analytics && !window.gaInitialized) {
+      initGA('G-FX9LLWKZMH');
+      window.gaInitialized = true;
+    }
   };
 
-  // Ocultar o banner de cookies na página de configurações de cookies
+  const handleSnackbarClose = () => setSnackbarOpen(false);
   const showCookieBanner = openCookieBanner && location.pathname !== '/cookie-settings';
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        minHeight="100vh"
-        width="100vw"
-        border="0"
-      >
-        {/* Rotas da Aplicação */}
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" width="100vw">
         <Routes>
           <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
-          <Route
-            path="/cookie-settings"
-            element={<CookieSettings onSave={handleSaveCookiePreferences} />}
-          /> {/* Rota para configurações de cookies */}
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* Rota para política de privacidade */}
+          <Route path="/cookie-settings" element={<CookieSettings onSave={handleSaveCookiePreferences} />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
 
-        {/* Banner de Cookies como Footer */}
         {showCookieBanner && (
-          <Box
-            sx={{
-              position: 'fixed',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: '#f5f5f5',
-              padding: '10px',
-              textAlign: 'center',
-              boxShadow: '0px -2px 5px rgba(0, 0, 0, 0.1)',
-            }}
-          >
+          <Box sx={bannerStyle}>
             <Typography variant="body2">
-              Este site utiliza cookies para melhorar a sua experiência. Ao continuar navegando, você concorda com o uso de cookies.
-              <br />
-              <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
-                Política de Privacidade
-              </a>
+              Utilizamos cookies para melhorar sua experiência. 
+              <a href="/privacy-policy" target="_blank" rel="noopener"> Política de Privacidade</a>
             </Typography>
-            <Button onClick={() => handleConsent(true)} color="primary" sx={{ marginRight: '10px' }}>
-              Aceitar
-            </Button>
-            <Button onClick={() => handleConsent(false)} color="secondary">
-              Recusar
-            </Button>
-            <Button onClick={() => navigate('/cookie-settings')} color="primary" sx={{ marginLeft: '10px' }}>
-              Configurações de Cookies
-            </Button>
+            <Button onClick={() => handleConsent(true)} color="primary">Aceitar Tudo</Button>
+            <Button onClick={() => handleConsent(false)} color="secondary">Recusar</Button>
+            <Button onClick={() => navigate('/cookie-settings')} color="primary">Personalizar</Button>
           </Box>
         )}
 
-        {/* Snackbar para Feedback */}
         <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-          <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
-            Preferências de cookies salvas com sucesso!
-          </Alert>
+          <Alert severity="success">Preferências salvas!</Alert>
         </Snackbar>
       </Box>
     </ThemeProvider>
   );
+};
+
+const bannerStyle = {
+  position: 'fixed',
+  bottom: 0,
+  left: 0,
+  right: 0,
+  bgcolor: 'background.paper',
+  p: 2,
+  textAlign: 'center',
+  boxShadow: 3,
 };
 
 export default App;
