@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Button, Box } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography, Button, Box, CircularProgress } from '@mui/material'; // Importe o CircularProgress
 import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
@@ -10,6 +10,7 @@ const Advertisement = ({ ads }) => {
   const [showAdvertisement, setShowAdvertisement] = useState(false);
   const [adsExibidos, setAdsExibidos] = useState([]);
   const [adClicado, setAdClicado] = useState(null); // Armazena qual anúncio foi clicado
+  const [isLoading, setIsLoading] = useState(false); // Estado para controlar o carregamento
 
   useEffect(() => {
     if (tempoRestante > 0) {
@@ -49,6 +50,7 @@ const Advertisement = ({ ads }) => {
 
   const liberarAcesso = (action, clickedAd = null) => {
     return () => {
+      setIsLoading(true); // Ativa o estado de carregamento
       if (clickedAd) {
         setAdClicado(clickedAd); // Salva o anúncio clicado
       }
@@ -62,9 +64,13 @@ const Advertisement = ({ ads }) => {
       updateInteraction({
         action,
         ads: adsParaEnviar,
-      }).then(() => {
-        fazerLogin();
-      });
+      })
+        .then(() => {
+          fazerLogin();
+        })
+        .finally(() => {
+          setIsLoading(false); // Desativa o estado de carregamento, independentemente do resultado
+        });
     };
   };
 
@@ -117,29 +123,31 @@ const Advertisement = ({ ads }) => {
               }}
             />
             {/* Botão CTA */}
-            {ads[currentAdIndex].cta_active && (<Box
-              sx={{
-                position: 'absolute',
-                bottom: 8,
-                right: 8,
-                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo cinza semi-transparente
-                color: 'white', // Texto claro
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                '&:hover': {
-                  backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece ao passar o mouse
-                },
-              }}
-              onClick={(e) => {
-                e.stopPropagation(); // Impede que o clique no botão dispare o clique na imagem
-                if (ads[currentAdIndex].dst_active) {
-                  liberarAcesso('click', ads[currentAdIndex])();
-                }
-              }}
-            >
-              {ads[currentAdIndex].cta_text || 'Saiba mais'}
-            </Box>)}
+            {ads[currentAdIndex].cta_active && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: 8,
+                  right: 8,
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo cinza semi-transparente
+                  color: 'white', // Texto claro
+                  padding: '8px 16px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece ao passar o mouse
+                  },
+                }}
+                onClick={(e) => {
+                  e.stopPropagation(); // Impede que o clique no botão dispare o clique na imagem
+                  if (ads[currentAdIndex].dst_active) {
+                    liberarAcesso('click', ads[currentAdIndex])();
+                  }
+                }}
+              >
+                {ads[currentAdIndex].cta_text || 'Saiba mais'}
+              </Box>
+            )}
           </Box>
           <CardContent>
             {!showAdvertisement && (
@@ -159,8 +167,13 @@ const Advertisement = ({ ads }) => {
                 variant="contained"
                 color="primary"
                 onClick={liberarAcesso('notClick')}
+                disabled={isLoading} // Desabilita o botão durante o carregamento
               >
-                Pular
+                {isLoading ? ( // Exibe o spinner ou o texto do botão
+                  <CircularProgress size={24} sx={{ color: 'black' }} /> // Spinner de carregamento
+                ) : (
+                  'Liberar Acesso'
+                )}
               </Button>
             </Box>
           )}
