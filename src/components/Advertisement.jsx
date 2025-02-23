@@ -99,23 +99,23 @@ const Advertisement = ({ ads }) => {
     <Card sx={{ maxWidth: 400, textAlign: 'center' }}>
       {ads.length > 0 && (
         <>
-          <CardMedia
-            component="img"
-            src={ads[currentAdIndex].imageUrl}
-            alt={ads[currentAdIndex].title}
-            sx={{
-              width: 320,
-              height: 320,
-              objectFit: 'cover',
-              cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
-              position: 'relative', // Adicionado para posicionar o botão absolutamente
-            }}
-            onClick={() => {
-              if (ads[currentAdIndex].dst_active) {
-                liberarAcesso('click', ads[currentAdIndex])();
-              }
-            }}
-          >
+          <Box sx={{ position: 'relative' }}> {/* Contêiner para posicionar o botão CTA */}
+            <CardMedia
+              component="img"
+              src={ads[currentAdIndex].imageUrl}
+              alt={ads[currentAdIndex].title}
+              sx={{
+                width: 320,
+                height: 320,
+                objectFit: 'cover',
+                cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
+              }}
+              onClick={() => {
+                if (ads[currentAdIndex].dst_active) {
+                  liberarAcesso('click', ads[currentAdIndex])();
+                }
+              }}
+            />
             {/* Botão CTA */}
             <Box
               sx={{
@@ -140,7 +140,7 @@ const Advertisement = ({ ads }) => {
             >
               {ads[currentAdIndex].ctaText || 'Saiba mais'}
             </Box>
-          </CardMedia>
+          </Box>
           <CardContent>
             {!showAdvertisement && (
               <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />
