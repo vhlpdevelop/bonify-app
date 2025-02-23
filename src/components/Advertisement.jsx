@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardMedia, Typography, Button, Box, CircularProgress } from '@mui/material'; // Importe o CircularProgress
+import { Card, CardContent, CardMedia, Typography, Button, Box, CircularProgress } from '@mui/material';
 import registryInteraction from '../services/registryInteraction';
 import LinearProgress from './LinearProgress';
 
@@ -102,84 +102,101 @@ const Advertisement = ({ ads }) => {
   };
 
   return (
-    <Card sx={{ maxWidth: 400, textAlign: 'center' }}>
-      {ads.length > 0 && (
-        <>
-          <Box sx={{ position: 'relative' }}> {/* Contêiner para posicionar o botão CTA */}
-            <CardMedia
-              component="img"
-              src={ads[currentAdIndex].imageUrl}
-              alt={ads[currentAdIndex].title}
-              sx={{
-                width: 320,
-                height: 320,
-                objectFit: 'cover',
-                cursor: ads[currentAdIndex].dst_active ? 'pointer' : 'default',
-              }}
-              onClick={() => {
-                if (ads[currentAdIndex].dst_active) {
-                  liberarAcesso('click', ads[currentAdIndex])();
-                }
-              }}
-            />
-            {/* Botão CTA */}
-            {ads[currentAdIndex].cta_active && (
-              <Box
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', p: 2 }}>
+      <Card sx={{ maxWidth: 400, textAlign: 'center', p: 2 }}>
+        {ads.length > 0 && (
+          <>
+            {/* Contêiner da imagem com botão CTA */}
+            <Box sx={{ position: 'relative', width: '100%', height: 320, overflow: 'hidden' }}>
+              <CardMedia
+                component="img"
+                src={ads[currentAdIndex].imageUrl}
+                alt={ads[currentAdIndex].title}
                 sx={{
-                  position: 'absolute',
-                  bottom: 8,
-                  right: 8,
-                  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fundo cinza semi-transparente
-                  color: 'white', // Texto claro
-                  padding: '8px 16px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece ao passar o mouse
-                  },
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover', // Mantém a proporção da imagem
                 }}
-                onClick={(e) => {
-                  e.stopPropagation(); // Impede que o clique no botão dispare o clique na imagem
+                onClick={() => {
                   if (ads[currentAdIndex].dst_active) {
                     liberarAcesso('click', ads[currentAdIndex])();
                   }
                 }}
+              />
+              {/* Botão CTA */}
+              {ads[currentAdIndex].cta_active && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    bottom: 8,
+                    right: 8,
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    color: 'white',
+                    padding: '8px 16px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    },
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede que o clique no botão dispare o clique na imagem
+                    if (ads[currentAdIndex].dst_active) {
+                      liberarAcesso('click', ads[currentAdIndex])();
+                    }
+                  }}
+                >
+                  {ads[currentAdIndex].cta_text || 'Saiba mais'}
+                </Box>
+              )}
+            </Box>
+
+            {/* Conteúdo do card (título, descrição, progresso) */}
+            <CardContent>
+              {!showAdvertisement && (
+                <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />
+              )}
+              <Typography gutterBottom variant="h5" component="div" sx={{ textAlign: 'center', mb: 2 }}>
+                {ads[currentAdIndex].title}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{
+                  textAlign: 'center',
+                  mb: 2,
+                  display: '-webkit-box',
+                  WebkitLineClamp: 3, // Limita a 3 linhas
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
               >
-                {ads[currentAdIndex].cta_text || 'Saiba mais'}
+                {ads[currentAdIndex].description}
+              </Typography>
+            </CardContent>
+
+            {/* Botão "Liberar Acesso" com indicador de carregamento */}
+            {showAdvertisement && (
+              <Box display="flex" justifyContent="center" pb={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={liberarAcesso('notClick')}
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <CircularProgress size={24} sx={{ color: 'white' }} /> // Spinner de carregamento
+                  ) : (
+                    'Liberar Acesso'
+                  )}
+                </Button>
               </Box>
             )}
-          </Box>
-          <CardContent>
-            {!showAdvertisement && (
-              <LinearProgress totalDuration={totalDuration} tempoRestante={tempoRestante} />
-            )}
-            <Typography gutterBottom variant="h5" component="div">
-              {ads[currentAdIndex].title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {ads[currentAdIndex].description}
-            </Typography>
-          </CardContent>
-
-          {showAdvertisement && (
-            <Box display="flex" justifyContent="center" pb={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={liberarAcesso('notClick')}
-                disabled={isLoading} // Desabilita o botão durante o carregamento
-              >
-                {isLoading ? ( // Exibe o spinner ou o texto do botão
-                  <CircularProgress size={24} sx={{ color: 'black' }} /> // Spinner de carregamento
-                ) : (
-                  'Liberar Acesso'
-                )}
-              </Button>
-            </Box>
-          )}
-        </>
-      )}
-    </Card>
+          </>
+        )}
+      </Card>
+    </Box>
   );
 };
 
