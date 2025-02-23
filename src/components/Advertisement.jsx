@@ -117,7 +117,7 @@ const Advertisement = ({ ads }) => {
               }}
             />
             {/* Botão CTA */}
-            <Box
+            {ads[currentAdIndex].cta_active && (<Box
               sx={{
                 position: 'absolute',
                 bottom: 8,
@@ -138,8 +138,8 @@ const Advertisement = ({ ads }) => {
                 }
               }}
             >
-              {ads[currentAdIndex].ctaText || 'Saiba mais'}
-            </Box>
+              {ads[currentAdIndex].cta_text || 'Saiba mais'}
+            </Box>)}
           </Box>
           <CardContent>
             {!showAdvertisement && (
