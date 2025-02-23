@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Typography, Checkbox, FormControlLabel, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const CookieSettings = () => {
+const CookieSettings = ({ onSave }) => {
   const [cookies, setCookies] = useState({
     essential: true,
     analytics: false,
@@ -18,8 +18,11 @@ const CookieSettings = () => {
     });
   };
 
-  const handleBack = () => {
-    navigate(-1); // Volta para a rota anterior
+  const handleSave = () => {
+    if (onSave) {
+      onSave(cookies); // Passa as preferências de cookies para o componente pai
+    }
+    navigate(-1); // Volta para a rota anterior após salvar
   };
 
   return (
@@ -32,6 +35,7 @@ const CookieSettings = () => {
             onChange={handleChange}
             name="essential"
             color="primary"
+            disabled // Cookies essenciais não podem ser desativados
           />
         }
         label="Cookies Essenciais"
@@ -45,7 +49,7 @@ const CookieSettings = () => {
             color="primary"
           />
         }
-        label="Cookies de Análise"
+        label="Cookies de Análise (Google Analytics)"
       />
       <FormControlLabel
         control={
@@ -58,8 +62,8 @@ const CookieSettings = () => {
         }
         label="Cookies de Marketing"
       />
-      <Button variant="contained" color="primary" onClick={handleBack} sx={{ marginTop: '20px' }}>
-        Voltar
+      <Button variant="contained" color="primary" onClick={handleSave} sx={{ marginTop: '20px' }}>
+        Salvar e Voltar
       </Button>
     </div>
   );

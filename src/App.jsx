@@ -3,31 +3,62 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom'; // useLocation agora funciona
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
 import CookieSettings from './components/CookieSettings';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import { initGA, trackPageView } from './js/analytics'; // Importa as funções de rastreamento
 
 const App = () => {
-  const [cookieConsent, setCookieConsent] = useState(null);
+  const [cookieConsent, setCookieConsent] = useState({
+    essential: true, // Cookies essenciais (sempre ativos)
+    analytics: false, // Cookies de análise (Google Analytics)
+    marketing: false, // Cookies de marketing
+  });
   const [openCookieBanner, setOpenCookieBanner] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const location = useLocation(); // Agora useLocation funciona corretamente
+  const location = useLocation(); // Hook para obter a localização atual
   const navigate = useNavigate(); // Hook para navegação
+
   // Verifica se o usuário já deu consentimento ao carregar o app
   useEffect(() => {
-    const consent = localStorage.getItem('cookieConsent');
+    const consent = JSON.parse(localStorage.getItem('cookieConsent'));
     if (consent === null) {
       setOpenCookieBanner(true); // Mostra o banner se não houver consentimento
     } else {
-      setCookieConsent(consent === 'true'); // Define o estado de consentimento
+      setCookieConsent(consent); // Define o estado de consentimento
     }
   }, []);
 
+  // Inicializa o Google Analytics se o usuário consentir com cookies de análise
+  useEffect(() => {
+    if (cookieConsent.analytics) {
+      initGA('G-FX9LLWKZMH'); // Substitua pelo seu ID de rastreamento
+    }
+  }, [cookieConsent.analytics]);
+
+  // Rastreia a visualização da página se o usuário consentir com cookies de análise
+  useEffect(() => {
+    if (cookieConsent.analytics) {
+      trackPageView(location.pathname);
+    }
+  }, [location, cookieConsent.analytics]);
+
+
+  const handleSaveCookiePreferences = (preferences) => {
+    localStorage.setItem('cookieConsent', JSON.stringify(preferences));
+    setCookieConsent(preferences);
+  };
+
   // Função para lidar com o consentimento do usuário
   const handleConsent = (consent) => {
-    localStorage.setItem('cookieConsent', consent);
-    setCookieConsent(consent);
+    const newConsent = {
+      essential: true, // Cookies essenciais sempre ativos
+      analytics: consent, // Cookies de análise baseados no consentimento
+      marketing: false, // Cookies de marketing (opcional)
+    };
+    localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
+    setCookieConsent(newConsent);
     setOpenCookieBanner(false);
     setSnackbarOpen(true); // Mostra um feedback visual
   };
@@ -54,8 +85,10 @@ const App = () => {
         {/* Rotas da Aplicação */}
         <Routes>
           <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
-
-          <Route path="/cookie-settings" element={<CookieSettings />} />
+          <Route
+            path="/cookie-settings"
+            element={<CookieSettings onSave={handleSaveCookiePreferences} />}
+          /> {/* Rota para configurações de cookies */}
           <Route path="/privacy-policy" element={<PrivacyPolicy />} /> {/* Rota para política de privacidade */}
         </Routes>
 
