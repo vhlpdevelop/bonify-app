@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
     setUser(userData);
     setBusiness(businessData);
     axios.defaults.headers.common["Authorization"] = JSON.stringify(
-        `Bearer ${response.data.token}`
+        `Bearer ${token}`
     );
     localStorage.setItem('token', token); // Salva o token no localStorage
     localStorage.setItem('user', JSON.stringify(userData)); // Salva os dados do usuário

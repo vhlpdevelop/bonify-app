@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 import axios from 'axios';
-const { login } = useAuth(); // Use a função login do contexto
+import { useAuth } from '../contexts/AuthContext'; // Importe o hook useAuth
+ // Use a função login do contexto
 const Login = () => {
+    const { login } = useAuth();
     const [credentials, setCredentials] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false); // Estado para controlar o loading
