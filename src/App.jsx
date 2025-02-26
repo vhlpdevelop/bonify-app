@@ -10,10 +10,10 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import { initGA, trackPageView } from './js/analytics';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import DashboardIndex from './pages/dashboard/Index'; // Página inicial da dashboard
-import Reports from './pages/dashboard/Reports'; // Página de relatórios
-import Settings from './pages/dashboard/Settings'; // Página de configurações
-import { AuthProvider } from './context/AuthContext'; // Importe o AuthProvider
+import DashboardIndex from './pages/DashboardIndex'; // Página inicial da dashboard
+import Reports from './pages/Reports'; // Página de relatórios
+import Settings from './pages/Settings'; // Página de configurações
+import { AuthProvider } from './contexts/AuthContext'; // Importe o AuthProvider
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState({

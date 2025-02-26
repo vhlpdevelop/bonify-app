@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
-import { useAuth } from '../context/AuthContext'; // Importe o hook useAuth
+import { useAuth } from '../contexts/AuthContext'; // Importe o hook useAuth
 const Dashboard = () => {
   const { user, business } = useAuth(); // Recupera os dados do contexto
   return (

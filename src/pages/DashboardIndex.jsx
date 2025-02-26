@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
-import KpiCard from '../components/KpiCard';
+import KpiCard from '../components/KPICard';
 import LineChart from '../components/LineChart';
 
 const DashboardIndex = () => {
