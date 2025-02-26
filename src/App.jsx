@@ -3,11 +3,13 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate, Navigate } from 'react-router-dom'; // Importe Navigate aqui
 import HotspotRedirect from './components/HotspotRedirect';
 import CookieSettings from './components/CookieSettings';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { initGA, trackPageView } from './js/analytics';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState({
@@ -19,6 +21,9 @@ const App = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+  // Verifica se o usuário está autenticado
+  const isAuthenticated = !!localStorage.getItem('token');
 
   // Verifica consentimento ao carregar
   useEffect(() => {
@@ -82,6 +87,11 @@ const App = () => {
       <CssBaseline />
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" width="100vw">
         <Routes>
+          <Route path="/login" element={<Login />} /> {/* Rota de Login */}
+          <Route
+            path="/dashboard"
+            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />} // Rota Protegida
+          />
           <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
           <Route path="/cookie-settings" element={<CookieSettings onSave={handleSaveCookiePreferences} />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
