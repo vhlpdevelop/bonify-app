@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box,Typography } from '@mui/material';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/SideBar';
 import Header from '../components/Header';
 import { useAuth } from '../contexts/AuthContext'; // Importe o hook useAuth
 const Dashboard = () => {
