@@ -3,13 +3,17 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import theme from './theme';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import { Route, Routes, useLocation, useNavigate, Navigate } from 'react-router-dom'; // Importe Navigate aqui
+import { Route, Routes, useLocation, useNavigate, Navigate, Outlet } from 'react-router-dom';
 import HotspotRedirect from './components/HotspotRedirect';
 import CookieSettings from './components/CookieSettings';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import { initGA, trackPageView } from './js/analytics';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import DashboardIndex from './pages/dashboard/Index'; // Página inicial da dashboard
+import Reports from './pages/dashboard/Reports'; // Página de relatórios
+import Settings from './pages/dashboard/Settings'; // Página de configurações
+import { AuthProvider } from './context/AuthContext'; // Importe o AuthProvider
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState({
@@ -90,8 +94,20 @@ const App = () => {
           <Route path="/login" element={<Login />} /> {/* Rota de Login */}
           <Route
             path="/dashboard"
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" replace />} // Rota Protegida
-          />
+            element={
+              isAuthenticated ? (
+                <AuthProvider> {/* Prover contexto apenas para a dashboard e sub-rotas */}
+                  <Dashboard />
+                </AuthProvider>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          >
+            <Route index element={<DashboardIndex />} /> {/* Página inicial da dashboard */}
+            <Route path="reports" element={<Reports />} /> {/* Rota de relatórios */}
+            <Route path="settings" element={<Settings />} /> {/* Rota de configurações */}
+          </Route>
           <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
           <Route path="/cookie-settings" element={<CookieSettings onSave={handleSaveCookiePreferences} />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
