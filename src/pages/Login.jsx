@@ -19,7 +19,7 @@ const Login = () => {
     try {
       const response = await axios.post('https://bonify-api-production.up.railway.app/user/login', credentials); // Substitua pela URL da sua API
       console.log(response)
-      if(response.ok){
+      if(response.data.ok){
         const { token } = response.data;
 
       // Salva o token no localStorage
