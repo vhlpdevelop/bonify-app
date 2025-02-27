@@ -4,6 +4,7 @@ import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from 
 import HomeIcon from '@mui/icons-material/Home';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AdsClickIcon from '@mui/icons-material/AdsClick';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -25,6 +26,14 @@ const Sidebar = () => {
               <BarChartIcon />
             </ListItemIcon>
             <ListItemText primary="Relatórios" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => navigate('/dashboard/adSettings')}>
+            <ListItemIcon>
+              <AdsClickIcon />
+            </ListItemIcon>
+            <ListItemText primary="Propagandas" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>

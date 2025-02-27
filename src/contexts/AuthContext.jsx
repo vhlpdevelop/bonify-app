@@ -6,7 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [business, setBusiness] = useState(null);
 
-  const login = (token,userData, businessData) => {
+  const login = (token,userData, businessData, ads) => {
     setUser(userData);
     setBusiness(businessData);
     axios.defaults.headers.common["Authorization"] = JSON.stringify(
@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', token); // Salva o token no localStorage
     localStorage.setItem('user', JSON.stringify(userData)); // Salva os dados do usuário
     localStorage.setItem('business', JSON.stringify(businessData)); // Salva os dados do negócio
+    localStorage.setItem('ads', JSON.stringify(ads)); // Salva os dados dos anúncios
   };
 
   const logout = () => {

@@ -24,11 +24,19 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" elevation={0} sx={{ bgcolor: 'background.paper' }}>
+    <AppBar
+      position="fixed" // Fixa o AppBar no topo
+      elevation={0}
+      sx={{
+        bgcolor: 'background.paper',
+        width: 'calc(100% - 240px)', // Ajusta a largura para ocupar o espaço restante
+        marginLeft: '240px', // Margem à esquerda igual à largura do Sidebar
+      }}
+    >
       <Toolbar>
         {/* Título da Página */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'text.primary' }}>
-          Dashboard
+          Painel
         </Typography>
 
         {/* Ícone de Notificações */}

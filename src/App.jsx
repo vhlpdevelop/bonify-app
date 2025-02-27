@@ -10,10 +10,12 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import { initGA, trackPageView } from './js/analytics';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import DashboardIndex from './pages/DashboardIndex'; // Página inicial da dashboard
-import Reports from './pages/Reports'; // Página de relatórios
-import Settings from './pages/Settings'; // Página de configurações
-import { AuthProvider } from './contexts/AuthContext'; // Importe o AuthProvider
+import DashboardIndex from './pages/DashboardIndex';
+import Reports from './pages/Reports';
+import Settings from './pages/Settings';
+import AdSettings from './pages/AdSettings';
+import AdEdit from './pages/AdEdit';
+import { AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
   const [cookieConsent, setCookieConsent] = useState({
@@ -43,7 +45,7 @@ const App = () => {
   useEffect(() => {
     if (cookieConsent.analytics) {
       initGA('G-FX9LLWKZMH');
-      trackPageView(location.pathname); // Rastreia a página inicial
+      trackPageView(location.pathname);
     }
   }, [cookieConsent.analytics, location.pathname]);
 
@@ -52,7 +54,7 @@ const App = () => {
     const newConsent = {
       essential: true,
       analytics: consent,
-      marketing: consent, // Se quiser ativar marketing junto com analytics
+      marketing: consent,
     };
 
     localStorage.setItem('cookieConsent', JSON.stringify(newConsent));
@@ -60,7 +62,6 @@ const App = () => {
     setOpenCookieBanner(false);
     setSnackbarOpen(true);
 
-    // Força novo carregamento se consentimento for dado posteriormente
     if (consent && !window.gaInitialized) {
       initGA('G-FX9LLWKZMH');
       window.gaInitialized = true;
@@ -71,7 +72,7 @@ const App = () => {
   const handleSaveCookiePreferences = (preferences) => {
     const updatedConsent = {
       ...preferences,
-      essential: true, // Garante cookies essenciais
+      essential: true,
     };
 
     localStorage.setItem('cookieConsent', JSON.stringify(updatedConsent));
@@ -89,56 +90,56 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" width="100vw">
-        <Routes>
-          {/* Rotas que NÃO usam AuthProvider */}
-          <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
-          <Route path="/cookie-settings" element={<CookieSettings onSave={handleSaveCookiePreferences} />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+      <Routes>
+        {/* Rotas que NÃO usam AuthProvider */}
+        <Route path="/hotspot-redirect" element={<HotspotRedirect />} />
+        <Route path="/cookie-settings" element={<CookieSettings onSave={handleSaveCookiePreferences} />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
 
-          {/* Rotas que usam AuthProvider */}
-          <Route
-            path="/*"
-            element={
-              <AuthProvider> {/* Envolve apenas as rotas de login e dashboard */}
-                <Routes>
-                  <Route path="/login" element={<Login />} /> {/* Rota de Login */}
-                  <Route
-                    path="/dashboard"
-                    element={
-                      isAuthenticated ? (
-                        <Dashboard />
-                      ) : (
-                        <Navigate to="/login" replace />
-                      )
-                    }
-                  >
-                    <Route index element={<DashboardIndex />} /> {/* Página inicial da dashboard */}
-                    <Route path="reports" element={<Reports />} /> {/* Rota de relatórios */}
-                    <Route path="settings" element={<Settings />} /> {/* Rota de configurações */}
-                  </Route>
-                </Routes>
-              </AuthProvider>
-            }
-          />
-        </Routes>
+        {/* Rotas que usam AuthProvider */}
+        <Route
+          path="/*"
+          element={
+            <AuthProvider>
+              <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    isAuthenticated ? (
+                      <Dashboard />
+                    ) : (
+                      <Navigate to="/login" replace />
+                    )
+                  }
+                >
+                  <Route index element={<DashboardIndex />} />
+                  <Route path="adSettings" element={<AdSettings />} />
+                  <Route path="/dashboard/adSettings/edit/:id" element={<AdEdit />} />
+                  <Route path="reports" element={<Reports />} />
+                  <Route path="settings" element={<Settings />} />
+                </Route>
+              </Routes>
+            </AuthProvider>
+          }
+        />
+      </Routes>
 
-        {showCookieBanner && (
-          <Box sx={bannerStyle}>
-            <Typography variant="body2">
-              Utilizamos cookies para melhorar sua experiência.
-              <a href="/privacy-policy" target="_blank" rel="noopener"> Política de Privacidade</a>
-            </Typography>
-            <Button onClick={() => handleConsent(true)} color="primary">Aceitar Tudo</Button>
-            <Button onClick={() => handleConsent(false)} color="secondary">Recusar</Button>
-            <Button onClick={() => navigate('/cookie-settings')} color="primary">Personalizar</Button>
-          </Box>
-        )}
+      {showCookieBanner && (
+        <Box sx={bannerStyle}>
+          <Typography variant="body2">
+            Utilizamos cookies para melhorar sua experiência.
+            <a href="/privacy-policy" target="_blank" rel="noopener"> Política de Privacidade</a>
+          </Typography>
+          <Button onClick={() => handleConsent(true)} color="primary">Aceitar Tudo</Button>
+          <Button onClick={() => handleConsent(false)} color="secondary">Recusar</Button>
+          <Button onClick={() => navigate('/cookie-settings')} color="primary">Personalizar</Button>
+        </Box>
+      )}
 
-        <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-          <Alert severity="success">Preferências salvas!</Alert>
-        </Snackbar>
-      </Box>
+      <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
+        <Alert severity="success">Preferências salvas!</Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 };
