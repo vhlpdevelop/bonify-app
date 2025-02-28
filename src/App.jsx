@@ -15,6 +15,7 @@ import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import AdSettings from './pages/AdSettings';
 import AdEdit from './pages/AdEdit';
+import CreateAd from './pages/CreateAd';
 import { AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -116,6 +117,7 @@ const App = () => {
                   <Route index element={<DashboardIndex />} />
                   <Route path="adSettings" element={<AdSettings />} />
                   <Route path="/dashboard/adSettings/edit/:id" element={<AdEdit />} />
+                  <Route path="/dashboard/adSettings/createAd" element={<CreateAd/>}/>
                   <Route path="reports" element={<Reports />} />
                   <Route path="settings" element={<Settings />} />
                 </Route>
