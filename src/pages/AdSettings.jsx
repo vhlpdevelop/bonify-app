@@ -20,7 +20,7 @@ import ToggleOffIcon from '@mui/icons-material/ToggleOff';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add'; // Ícone de "+"
 import updateAds from '../services/updateAds';
-
+import deleteAds from '../services/deleteAds';
 const AdSettings = () => {
   const navigate = useNavigate();
   const [ads, setAds] = useState([]);
@@ -87,12 +87,19 @@ const AdSettings = () => {
     setDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async() => {
     if (adToDelete) {
-      const updatedAds = ads.filter(ad => ad._id !== adToDelete);
+      console.log(adToDelete)
+      const adsData = await deleteAds(adToDelete);
+      if(adsData.ok){
+        const updatedAds = ads.filter(ad => ad._id !== adToDelete);
       setAds(updatedAds);
       localStorage.setItem('ads', JSON.stringify(updatedAds));
       setAdToDelete(null);
+      }else{
+        console.log("Ocorreu um erro")
+      }
+      
     }
     setDeleteDialogOpen(false);
   };

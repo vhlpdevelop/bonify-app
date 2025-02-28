@@ -105,7 +105,7 @@ const AdEdit = () => {
       />
 
       <Box sx={{ mt: 2 }}>
-        <Typography variant="h6">Alterar Imagem do Anúncio, recomendado é 320x240 px</Typography>
+        <Typography variant="h6">Alterar Imagem do Anúncio, recomendado é 640x480 px ou 4:3</Typography>
         <input
           type="file"
           accept="image/*"

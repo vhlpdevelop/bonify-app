@@ -6,7 +6,7 @@ const createAds = async (params) => {
     try {
         const response = await axios.post('https://bonify-api-production.up.railway.app/user/createAds', params)
         console.log(response)
-        if (response.status === 200) {
+        if (response.status === 201) {
             console.log('Propaganda Criada!');
             return response.data; // Retorna os dados das propagandas
         } else {

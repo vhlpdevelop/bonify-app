@@ -107,7 +107,7 @@ const Advertisement = ({ ads }) => {
         {ads.length > 0 && (
           <>
             {/* Contêiner da imagem com botão CTA */}
-            <Box sx={{ position: 'relative', width: '100%', height: 320, overflow: 'hidden' }}>
+            <Box sx={{ position: 'relative', width: '100%', height: 400, overflow: 'hidden' }}>
               <CardMedia
                 component="img"
                 src={ads[currentAdIndex].imageUrl}
