@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 import Advertisement from './Advertisement';
 import getAds from '../services/getAds'; // Importe a função getAds
-
+import getOrGenerateClientId from '../services/clientID'; 
 const HotspotRedirect = () => {
     const location = useLocation();
     const [showAdvertisement, setShowAdvertisement] = useState(false);
@@ -35,7 +35,11 @@ const HotspotRedirect = () => {
      
         const fetchAds = async () => {
             try {
+                //Verifica se tem UUID
+                await getOrGenerateClientId();
+                //
                 const adsData = await getAds(params); // Busca as propagandas
+                //
                 setAds(adsData); // Atualiza o estado com os dados das propagandas
                 setLoading(false); // Finaliza o carregamento
             } catch (error) {
