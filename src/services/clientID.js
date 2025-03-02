@@ -24,3 +24,4 @@ export const getOrGenerateClientId = async () => {
 
     return clientId;
 };
+export default getOrGenerateClientId
