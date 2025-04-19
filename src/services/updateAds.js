@@ -4,7 +4,7 @@ const updateAds = async (params) => {
     console.log("Update ads service ===>")
     console.log(params)
     try {
-        const response = await axios.post('https://bonify-api-production.up.railway.app/user/updateAds', params)
+        const response = await axios.post('https://bonify-api.onrender.com/user/updateAds', params)
         console.log(response)
         if (response.status === 200) {
             console.log('Propaganda Atualizada!');

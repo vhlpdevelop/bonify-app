@@ -4,7 +4,7 @@ const createAds = async (params) => {
     console.log("Create ads service ===>")
     console.log(params)
     try {
-        const response = await axios.post('https://bonify-api-production.up.railway.app/user/createAds', params)
+        const response = await axios.post('https://bonify-api.onrender.com/user/createAds', params)
         console.log(response)
         if (response.status === 201) {
             console.log('Propaganda Criada!');

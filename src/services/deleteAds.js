@@ -4,7 +4,7 @@ const deleteAds = async (params) => {
     console.log("delete ads service ===>")
     console.log(params)
     try {
-        const response = await axios.delete('https://bonify-api-production.up.railway.app/user/deleteAds/'+params)
+        const response = await axios.delete('https://bonify-api.onrender.com/user/deleteAds/'+params)
         console.log(response)
         if (response.status === 200) {
             console.log('Propaganda Deletada!');

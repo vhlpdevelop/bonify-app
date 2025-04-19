@@ -17,7 +17,7 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://bonify-api-production.up.railway.app/user/login', credentials);
+      const response = await axios.post('https://bonify-api.onrender.com/user/login', credentials);
       console.log(response);
       if (response.data.ok) {
         const { token, user, business, ads } = response.data;
