@@ -18,7 +18,7 @@ const registryInteraction = async (params) => {
     console.log("registryInteraction ->", payload);
 
     try {
-        const response = await axios.post('https://bonify-api-production.up.railway.app/hotspot/registryInteraction', params)
+        const response = await axios.post('https://bonify-api.onrender.com/hotspot/registryInteraction', params)
         console.log(response)
         if (response.status === 200) {
             console.log('Registro feito!');
