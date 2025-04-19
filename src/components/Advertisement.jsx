@@ -40,13 +40,13 @@ const Advertisement = ({ ads }) => {
 
   const updateInteraction = async (data) => {
     try {
-      console.log("Enviando interação para API:", data);
-      await registryInteraction(data);
-      console.log("Registro feito com sucesso!");
+        console.log("Enviando interação para API:", data);
+        await registryInteraction(data); // UUID já será incluído aqui
+        console.log("Registro feito com sucesso!");
     } catch (error) {
-      console.error("Erro ao registrar interação:", error);
+        console.error("Erro ao registrar interação:", error);
     }
-  };
+};
 
   const liberarAcesso = (action, clickedAd = null) => {
     return () => {
